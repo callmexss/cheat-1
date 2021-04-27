@@ -115,6 +115,6 @@ if __name__ == '__main__':
     else:
         keyword = options['<cheatsheet>']
         if RICH_ENABLE:
-            print(colorize.syntax_rich(sheet.read(keyword), keyword), end="")
+            print(colorize.syntax_rich(sheet.read(keyword)), end="")
         else:
             print(colorize.syntax(sheet.read(keyword)), end="")

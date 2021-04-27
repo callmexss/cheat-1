@@ -123,4 +123,4 @@ class Sheets:
             if sheet_result:
                 ret.append(cheatsheet[0] + ":\n" + sheet_result)
        
-        return '\n'.join(ret) if ret else ''
+        return '\n'.join(ret) + '\n' if ret else ''

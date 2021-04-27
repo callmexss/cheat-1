@@ -64,14 +64,14 @@ class Colorize:
                lexer,
                TerminalFormatter(bg=self._config.cheat_colorscheme))
 
-    def syntax_rich(self, sheet_content, keyword):
+    def syntax_rich(self, sheet_content, keyword=''):
         ret = []
         for line in sheet_content.splitlines():
             if line.startswith('#'):
                 ret.append(f"[green]{line}[/green]")
-            # elif keyword in line:
-            #     line = line.replace(keyword, f"[yellow]{keyword}[/yellow]")
-            #     ret.append(line)
+            elif keyword in line:
+                line = line.replace(keyword, f"[yellow]{keyword}[/yellow]")
+                ret.append(line)
             else:
                 ret.append(line)
         return '\n'.join(ret)
