@@ -77,48 +77,50 @@ class Sheets:
 
         return result
 
+    def _parse_one(self, cheatsheet, term):
+        index = 0
+        tmp_li = []
+        contents_list = io.open(cheatsheet[1], encoding='utf-8').readlines()
+        length = len(contents_list)
+
+        while index < length:
+            line = contents_list[index]
+            if term not in line:
+                index += 1
+                continue
+            else:
+                # find the first empty line or up or bottom of the file from this line
+                left_index = index - 1
+                right_index = index + 1
+                tmp_q = deque([line])
+                left_hit = False
+                right_hit = False
+
+                while not left_hit or not right_hit:
+                    if not left_hit and left_index >= 0 and contents_list[left_index].strip():
+                        tmp_q.appendleft(contents_list[left_index])
+                        left_index -= 1
+                    else:
+                        left_hit = True
+
+                    if not right_hit and right_index < length and contents_list[right_index].strip():
+                        tmp_q.append(contents_list[right_index])
+                        right_index += 1
+                    else:
+                        index = right_index
+                        right_hit = True
+
+                tmp_li.append(''.join(tmp_q))
+
+        return '\n'.join(tmp_li)
+
     def upgrade_search(self, term):
         """ Searches all cheatsheets for the specified term """
         ret = []
 
         for cheatsheet in sorted(self.get().items()):
-            if cheatsheet[0] == "kubeadm":
-                # import pdb; pdb.set_trace()
-                pass
-            contents_list = io.open(cheatsheet[1], encoding='utf-8').readlines()
-            length = len(contents_list)
-
-            last_hit_loc = 0
-            tmp_li = []
-            has_seen = set()
-            for i, line in enumerate(contents_list):
-                if line in has_seen:
-                    # print(set(has_seen))
-                    continue
-
-                if term in line:
-                    # find the first empty line or up or bottom of the file from this line
-                    left_index = i - 1
-                    right_index = i + 1
-                    tmp_q = deque([line])
-                    while left_index >= 0 or right_index < length:
-                        if left_index >= 0 and contents_list[left_index] != '\n':
-                            has_seen.add(line)
-                            tmp_q.appendleft(contents_list[left_index])
-                            left_index -= 1
-                        else:
-                            left_index = -1
-
-                        if right_index < length and contents_list[right_index] != '\n':
-                            has_seen.add(line)
-                            tmp_q.append(contents_list[right_index])
-                            right_index += 1
-                        else:
-                            right_index = length
-                    if tmp_q:
-                        tmp_li.append(''.join(tmp_q))
-
-            if tmp_li:
-                ret.append(cheatsheet[0] + ":\n" + '\n'.join(tmp_li))
-        
+            sheet_result = ''.join(self._parse_one(cheatsheet, term))
+            if sheet_result:
+                ret.append(cheatsheet[0] + ":\n" + sheet_result)
+       
         return '\n'.join(ret) if ret else ''
