@@ -44,6 +44,12 @@ from cheat.utils import Utils
 from docopt import docopt
 import os
 
+try:
+    from rich import print
+    RICH_ENABLE = True
+except ImportError:
+    RICH_ENABLE = False
+
 if __name__ == '__main__':
 
     # parse the command-line options
@@ -98,10 +104,17 @@ if __name__ == '__main__':
 
     # search among the cheatsheets
     elif options['--search']:
-        print(colorize.syntax(sheets.search(options['<keyword>'])), end="")
+        # print(colorize.syntax(sheets.search(options['<keyword>'])), end="")
+        keyword = options['<keyword>']
+        if RICH_ENABLE:
+            print(colorize.syntax_rich(sheets.upgrade_search(keyword), keyword), end="")
+        else:
+            print(colorize.syntax(sheets.upgrade_search(options['<keyword>'])), end="")
 
     # print the cheatsheet
     else:
-        # print(colorize.syntax(sheet.read(options['<cheatsheet>'])), end="")
         keyword = options['<cheatsheet>']
-        print(colorize.syntax_rich(sheet.read(keyword), keyword), end="")
+        if RICH_ENABLE:
+            print(colorize.syntax_rich(sheet.read(keyword), keyword), end="")
+        else:
+            print(colorize.syntax(sheet.read(keyword)), end="")

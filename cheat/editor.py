@@ -1,6 +1,7 @@
 from __future__ import print_function
 from cheat.utils import Utils
 import subprocess
+import os
 
 
 class Editor:
@@ -26,4 +27,6 @@ class Editor:
         try:
             subprocess.call(editor_cmd + [filepath])
         except OSError:
+            os.system(f"{editor_cmd[0]} {filepath}")
+        except Exception:
             Utils.die('Could not launch ' + self.editor())
