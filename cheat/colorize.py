@@ -69,7 +69,7 @@ class Colorize:
         for line in sheet_content.splitlines():
             if line.startswith('#'):
                 ret.append(f"[green]{line}[/green]")
-            elif keyword in line:
+            elif keyword and keyword in line:
                 line = line.replace(keyword, f"[yellow]{keyword}[/yellow]")
                 ret.append(line)
             else:
