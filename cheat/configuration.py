@@ -64,7 +64,7 @@ class Configuration:
             os.environ.get('EDITOR'),
             os.environ.get('VISUAL'),
             config.get('CHEAT_EDITOR'),
-            'vi',
+            'code',  # change to vscode as default
         ])
 
         # self.cheat_highlight
